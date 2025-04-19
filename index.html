@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEED Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef2ff;
+            --primary-dark: #3949ab;
+            --secondary: #2d3748;
+            --accent: #f72585;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --bg-white: #ffffff;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .sub-title {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+        }
+        
+        .search-container {
+            background-color: var(--bg-white);
+            padding: 24px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .search-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        #rollNumber, #dateOfBirth {
+            padding: 12px 16px;
+            width: 100%;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #rollNumber:focus, #dateOfBirth:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        #searchBtn {
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        
+        #searchBtn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .error-message {
+            color: var(--accent);
+            text-align: center;
+            margin: 16px 0;
+            font-weight: 500;
+        }
+        
+        .info-box, .attendance-box {
+            background-color: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        
+        .info-row {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            color: var(--text-dark);
+            font-size: 16px;
+            word-break: break-word;
+            font-weight: 500;
+        }
+        
+        .attendance-header {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .attendance-header::before, .attendance-header::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .attendance-header::before {
+            margin-right: 12px;
+        }
+        
+        .attendance-header::after {
+            margin-left: 12px;
+        }
+        
+        .attendance-percentage {
+            background-color: var(--primary-light);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attendance-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .attendance-value {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        td {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .present {
+            color: #047857;
+        }
+        
+        .absent {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .date-column {
+            text-align: left;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-light);
+            font-size: 14px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        #resultContainer {
+            display: none;
+        }
+        
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary-light);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #loadingMessage {
+            text-align: center;
+            color: var(--primary);
+            margin: 10px 0;
+            font-weight: 500;
+            display: none;
+        }
+        
+        /* Responsive styles */
+        @media (min-width: 640px) {
+            .container {
+                padding: 32px;
+            }
+            
+            .search-form {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-end;
+            }
+            
+            .search-field {
+                flex-grow: 1;
+                flex-basis: 45%;
+            }
+            
+            .button-field {
+                flex-basis: 100%;
+                margin-top: 10px;
+            }
+            
+            .info-row {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .info-label {
+                width: 150px;
+                margin-bottom: 0;
+            }
+            
+            .main-title {
+                font-size: 32px;
+            }
+        }
+        
+        .search-field {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .session-column {
+            min-width: 80px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius:  var(--radius);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-present {
+            background-color: yellow;
+            color: black;
+        }
+        
+        .badge-absent {
+            background-color: black;
+            color: white;
+        }
+
+        .button-field {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .button-field {
+                margin-top: 0;
+                margin-left: 16px;
+            }
+        }
+        
+        .custom-date-input {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .custom-date-input select {
+            padding: 12px;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            flex: 1;
+        }
+        
+        .custom-date-input select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">SEED Training</h1>
+            <div class="sub-title">19 May 2025 to 23 May 2025</div>
+        </div>
+        
+        <div class="search-container">
+            <div class="search-form">
+                <div class="search-field">
+                    <label for="rollNumber" class="search-label">Roll Number</label>
+                    <input type="text" id="rollNumber" placeholder="Enter your roll number" autocomplete="off">
+                </div>
+                <div class="search-field">
+                    <label for="dateOfBirth" class="search-label">Date of Birth</label>
+                    <div class="custom-date-input">
+                        <select id="dobDay">
+                            <option value="">Day</option>
+                            <!-- Days will be populated by JavaScript -->
+                        </select>
+                        <select id="dobMonth">
+                            <option value="">Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <select id="dobYear">
+                            <option value="">Year</option>
+                            <!-- Years will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                <div class="button-field">
+                    <button id="searchBtn">Search</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="loadingMessage">Retrieving student data...</div>
+        <div class="loader" id="loader"></div>
+        
+        <div id="resultContainer">
+            <div class="info-box">
+                <div class="info-row">
+                    <div class="info-label">Name</div>
+                    <div id="name" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Roll Number</div>
+                    <div id="roll" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Department</div>
+                    <div id="department" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Career Choice</div>
+                    <div id="careerChoice" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Venue</div>
+                    <div id="venue" class="info-value"></div>
+                </div>
+            </div>
+            
+            <div class="attendance-box">
+                <h2 class="attendance-header">Attendance Record</h2>
+                
+                <div class="attendance-percentage">
+                    <span class="attendance-label">Attendance Percentage</span>
+                    <span id="attendancePercentage" class="attendance-value">-</span>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th class="session-column">Session 1</th>
+                            <th class="session-column">Session 2</th>
+                            <th class="session-column">Session 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="date-column">19 May 2025</td>
+                            <td id="may19s1"></td>
+                            <td id="may19s2"></td>
+                            <td id="may19s3"></td>
+                        </tr>
+                        <tr>
+                            <td class="date-column">20 May 2025</td>
+                            <td id="may20s1"></td>
+                            <td id="may20s2"></td>
+                            <td id="may20s3"></td>
+                        </tr>
+                        <tr>
+                            <td class="date-column">21 May 2025</td>
+                            <td id="may21s1"></td>
+                            <td id="may21s2"></td>
+                            <td id="may21s3"></td>
+                        </tr>
+                        <tr>
+                            <td class="date-column">22 May 2025</td>
+                            <td id="may22s1"></td>
+                            <td id="may22s2"></td>
+                            <td id="may22s3"></td>
+                        </tr>
+                        <tr>
+                            <td class="date-column">23 May 2025</td>
+                            <td id="may23s1"></td>
+                            <td id="may23s2"></td>
+                            <td id="may23s3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            For any discrepancies, please contact Learning & Development, PSGCAS
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = "https://script.google.com/macros/s/AKfycbwDxH76JrMg08nL85Ap724hGEdQgeR63oJpEcRjjBwf7ba6v8IsTxABekM8Igi5xuv2/exec";
+        
+        // Populate days dropdown
+        const dobDay = document.getElementById('dobDay');
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i < 10 ? '0' + i : i.toString();
+            option.textContent = i;
+            dobDay.appendChild(option);
+        }
+        
+        // Populate years dropdown (2000-2008)
+        const dobYear = document.getElementById('dobYear');
+        for (let i = 2000; i <= 2008; i++) {
+            const option = document.createElement('option');
+            option.value = i.toString();
+            option.textContent = i;
+            dobYear.appendChild(option);
+        }
+        
+        // Add event listeners
+        document.getElementById('searchBtn').addEventListener('click', searchRoll);
+        document.getElementById('rollNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchRoll();
+            }
+        });
+        
+        // Update days based on month and year selection
+        document.getElementById('dobMonth').addEventListener('change', updateDaysInMonth);
+        document.getElementById('dobYear').addEventListener('change', updateDaysInMonth);
+        
+        function updateDaysInMonth() {
+            const year = document.getElementById('dobYear').value;
+            const month = document.getElementById('dobMonth').value;
+            
+            if (!year || !month) return;
+            
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const dobDay = document.getElementById('dobDay');
+            const selectedDay = dobDay.value;
+            
+            // Clear days
+            while (dobDay.options.length > 1) {
+                dobDay.remove(1);
+            }
+            
+            // Re-populate days based on selected month/year
+            for (let i = 1; i <= daysInMonth; i++) {
+                const day = i < 10 ? '0' + i : i.toString();
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = i;
+                dobDay.appendChild(option);
+            }
+            
+            // Restore selected day if valid
+            if (selectedDay && parseInt(selectedDay) <= daysInMonth) {
+                dobDay.value = selectedDay;
+            }
+        }
+        
+        function validateRoll(roll) {
+            // Remove leading/trailing spaces and convert to uppercase
+            roll = roll.trim().toUpperCase();
+            
+            // Check if exactly 8 characters
+            if (roll.length !== 8) {
+                return false;
+            }
+            
+            // First two digits should be 21, 22, 23, or 24
+            const firstTwo = roll.substring(0, 2);
+            if (!['21', '22', '23', '24'].includes(firstTwo)) {
+                return false;
+            }
+            
+            // Third character should be B or M
+            const third = roll.charAt(2);
+            if (!['B', 'M', 'V'].includes(third)) {
+                return false;
+            }
+            
+            // Fourth and fifth characters should be A to Z
+            const fourth = roll.charAt(3);
+            const fifth = roll.charAt(4);
+            if (!/[A-Z]/.test(fourth) || !/[A-Z]/.test(fifth)) {
+                return false;
+            }
+            
+            // Sixth character should be 0, 1, 5, or 6
+            const sixth = roll.charAt(5);
+            if (!['0', '1', '5', '6'].includes(sixth)) {
+                return false;
+            }
+            
+            // Seventh character should be 0 to 6
+            const seventh = roll.charAt(6);
+            if (!'0123456'.includes(seventh)) {
+                return false;
+            }
+            
+            // Eighth character should be 0 to 9
+            const eighth = roll.charAt(7);
+            if (!/[0-9]/.test(eighth)) {
+                return false;
+            }
+            
+            return roll;
+        }
+
+        function validateDOB() {
+            const day = document.getElementById('dobDay').value;
+            const month = document.getElementById('dobMonth').value;
+            const year = document.getElementById('dobYear').value;
+            
+            // Check if all fields are filled
+            if (!day || !month || !year) {
+                return false;
+            }
+            
+            // Check if year is between 2000 and 2008
+            const yearNum = parseInt(year);
+            if (yearNum < 2000 || yearNum > 2008) {
+                return false;
+            }
+            
+            // Check if date is valid
+            try {
+                const dateObj = new Date(`${year}-${month}-${day}`);
+                if (isNaN(dateObj.getTime())) {
+                    return false;
+                }
+            } catch (e) {
+                return false;
+            }
+            
+            // Return DOB in dd-mm-yyyy format
+            return `${day}-${month}-${year}`;
+        }
+        
+        function searchRoll() {
+            const rollInput = document.getElementById('rollNumber').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const resultContainer = document.getElementById('resultContainer');
+            const loader = document.getElementById('loader');
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            // Validate roll number
+            const validatedRoll = validateRoll(rollInput);
+            
+            if (!validatedRoll) {
+                errorDiv.textContent = "Please enter a valid roll number";
+                resultContainer.style.display = "none";
+                loader.style.display = "none";
+                loadingMessage.style.display = "none";
+                return;
+            }
+
+            // Validate date of birth
+            const formattedDOB = validateDOB();
+            if (!formattedDOB) {
+                errorDiv.textContent = "Please enter a valid date of birth (between 2000-2008)";
+                resultContainer.style.display = "none";
+                loader.style.display = "none";
+                loadingMessage.style.display = "none";
+                return;
+            }
+            
+            // Show loading state
+            errorDiv.textContent = "";
+            resultContainer.style.display = "none";
+            loader.style.display = "block";
+            loadingMessage.style.display = "block";
+            
+            // Fetch data from API with roll number and DOB
+            fetch(`${apiUrl}?rollNumber=${validatedRoll}&dateOfBirth=${formattedDOB}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        // Try to parse as JSON
+                        const data = JSON.parse(text);
+                        return data;
+                    } catch (e) {
+                        // If can't parse as JSON, handle as text response
+                        if (text === "undefined" || text.includes("Error") || text.trim() === "") {
+                            throw new Error("Invalid data");
+                        }
+                        try {
+                            // Sometimes API might return weird formatting, try to extract data
+                            return JSON.parse(text.replace(/[\n\r]/g, ''));
+                        } catch (e2) {
+                            throw new Error("Could not parse data");
+                        }
+                    }
+                })
+                .then(data => {
+                    loader.style.display = "none";
+                    loadingMessage.style.display = "none";
+                    
+                    if (!data || data.error) {
+                        errorDiv.textContent = data.error || "Student not found or date of birth incorrect";
+                        resultContainer.style.display = "none";
+                        return;
+                    }
+                    
+                    // Clear error message
+                    errorDiv.textContent = "";
+                    
+                    // Display data based on your App Script's response format
+                    document.getElementById('name').textContent = data.Name || "-";
+                    document.getElementById('roll').textContent = data["Roll Number"] || validatedRoll;
+                    document.getElementById('department').textContent = data.Department || "-";
+                    document.getElementById('careerChoice').textContent = data["Career Choice"] || "-";
+                    document.getElementById('venue').textContent = data.Venue || "-";
+                    
+                    // Your App Script doesn't seem to return attendance data yet
+                    const attendancePercentage = data.AttendancePercentage;
+                    if (attendancePercentage !== undefined && attendancePercentage !== null) {
+                        document.getElementById('attendancePercentage').textContent = (attendancePercentage * 100).toFixed(2) + "%";
+                    } else {
+                        document.getElementById('attendancePercentage').textContent = "N/A";
+                    }
+                    
+                    // For the attendance table, you'll need to update your App Script
+                    const sessionMappings = [
+                        { id: 'may19s1', field: 'May 19 - S1' },
+                        { id: 'may19s2', field: 'May 19 - S2' },
+                        { id: 'may19s3', field: 'May 19 - S3' },
+                        { id: 'may20s1', field: 'May 20 - S1' },
+                        { id: 'may20s2', field: 'May 20 - S2' },
+                        { id: 'may20s3', field: 'May 20 - S3' },
+                        { id: 'may21s1', field: 'May 21 - S1' },
+                        { id: 'may21s2', field: 'May 21 - S2' },
+                        { id: 'may21s3', field: 'May 21 - S3' },
+                        { id: 'may22s1', field: 'May 22 - S1' },
+                        { id: 'may22s2', field: 'May 22 - S2' },
+                        { id: 'may22s3', field: 'May 22 - S3' },
+                        { id: 'may23s1', field: 'May 23 - S1' },
+                        { id: 'may23s2', field: 'May 23 - S2' },
+                        { id: 'may23s3', field: 'May 23 - S3' }
+                    ];
+                    
+                    sessionMappings.forEach(mapping => {
+                        const cellElement = document.getElementById(mapping.id);
+                        const value = data[mapping.field] || "-";
+                        
+                        if (value === "A") {
+                            cellElement.innerHTML = '<span class="status-badge badge-absent">Absent</span>';
+                        } else if (value === "P") {
+                            cellElement.innerHTML = '<span class="status-badge badge-present">Present</span>';
+                        } else {
+                            cellElement.textContent = value;
+                        }
+                    });
+                    
+                    // Show result container
+                    resultContainer.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorDiv.textContent = "Error fetching data. Please try again.";
+                    resultContainer.style.display = "none";
+                    loader.style.display = "none";
+                    loadingMessage.style.display = "none";
+                });
+        }
+    </script>
+</body>
+</html>
